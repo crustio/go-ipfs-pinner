@@ -200,8 +200,9 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		}
 		rpMaps, _ := endSeal(rootNode.Cid())
 
-		for k, v := range rpMaps {
-			fmt.Printf("Key: '%s' Value: '%s'\n", k, v)
+		fmt.Printf("Root Key: '%s'\n", c)
+		for k, _ := range rpMaps {
+			fmt.Printf("Sealed Key: '%s'\n", k)
 		}
 
 		p.lock.Lock()
