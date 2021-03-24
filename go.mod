@@ -9,6 +9,7 @@ require (
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ds-leveldb v0.4.2
 	github.com/ipfs/go-ipfs-blockstore v0.1.4
+	github.com/ipfs/go-ipfs-ds-help v0.1.1
 	github.com/ipfs/go-ipfs-exchange-offline v0.0.1
 	github.com/ipfs/go-ipfs-util v0.0.2
 	github.com/ipfs/go-ipld-format v0.2.0
