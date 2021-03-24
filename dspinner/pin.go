@@ -193,10 +193,10 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		err = mdag.FetchGraph(ctx, c, p.dserv)
 
 		rootNode, _ := p.dserv.Get(ctx, c)
-		startSeal(rootNode.Cid(), rootNode.RawData())
+		_ = startSeal(rootNode.Cid(), rootNode.RawData())
 		for i := 0; i < len(rootNode.Links()); i++ {
 			leafNode, _ := p.dserv.Get(ctx, rootNode.Links()[i].Cid)
-			seal(rootNode.Cid(), leafNode.Cid(), leafNode.RawData())
+			_ = seal(rootNode.Cid(), leafNode.Cid(), leafNode.RawData())
 		}
 		rpMaps, _ := endSeal(rootNode.Cid())
 

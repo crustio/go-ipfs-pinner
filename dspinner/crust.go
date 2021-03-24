@@ -10,6 +10,10 @@ import (
 var sealedMap map[cid.Cid]map[cid.Cid]string
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
+func init() {
+	sealedMap = make(map[cid.Cid]map[cid.Cid]string)
+}
+
 func startSeal(root cid.Cid, value []byte) error {
 	sealedMap[root] = make(map[cid.Cid]string)
 	r.Seed(time.Now().UnixNano())
