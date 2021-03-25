@@ -192,25 +192,28 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		p.lock.Unlock()
 		// Fetch graph starting at node identified by cid
 		err = mdag.FetchGraph(ctx, c, p.dserv)
-
-		rootNode, _ := p.dserv.Get(ctx, c)
-		_ = startSeal(rootNode.Cid(), rootNode.RawData())
-		for i := 0; i < len(rootNode.Links()); i++ {
-			leafNode, _ := p.dserv.Get(ctx, rootNode.Links()[i].Cid)
-			_ = seal(rootNode.Cid(), leafNode.Cid(), leafNode.RawData())
-		}
-		rpMaps, _ := endSeal(rootNode.Cid())
-
-		fmt.Printf("Root Key: '%s'\n", c)
-		for k, v := range rpMaps {
-			_ = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), v)
-			fmt.Printf("Put sealed Key: '%s'\n", k)
-		}
-
-		p.lock.Lock()
 		if err != nil {
+			p.lock.Lock()
 			return err
 		}
+
+		// Seal
+		rpMap, err := seal(ctx, c, p.dserv)
+		if err != nil {
+			p.lock.Lock()
+			return err
+		}
+
+		// Replace blocks
+		for k, v := range rpMap {
+			err = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), v)
+			if err != nil {
+				p.lock.Lock()
+				return err
+			}
+			fmt.Printf("Put sealed Key: '%s'\n", k)
+		}
+		p.lock.Lock()
 
 		// Only look again if something has changed.
 		if p.dirty != dirtyBefore {
