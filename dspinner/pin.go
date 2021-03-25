@@ -203,8 +203,7 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 		fmt.Printf("Root Key: '%s'\n", c)
 		for k, v := range rpMaps {
-
-			_ = p.dstore.Put(dshelp.CidToDsKey(k), v)
+			_ = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), v)
 			fmt.Printf("Put sealed Key: '%s'\n", k)
 		}
 
