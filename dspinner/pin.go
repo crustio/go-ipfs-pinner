@@ -5,11 +5,13 @@ package dspinner
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path"
 	"sync"
 
+	crust "../crust"
 	"github.com/ipfs/go-cid"
 	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
@@ -198,20 +200,23 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		}
 
 		// Seal
-		rpMap, err := seal(ctx, c, p.dserv)
-		if err != nil {
-			p.lock.Lock()
-			return err
-		}
+		rpMap, err := crust.Seal(ctx, c, p.dserv)
+		if err == nil {
+			// Replace blocks
+			for k, v := range rpMap {
+				bv, err := json.Marshal(v)
+				if err != nil {
+					p.lock.Lock()
+					return err
+				}
 
-		// Replace blocks
-		for k, v := range rpMap {
-			err = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), v)
-			if err != nil {
-				p.lock.Lock()
-				return err
+				err = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), bv)
+				if err != nil {
+					p.lock.Lock()
+					return err
+				}
+				fmt.Printf("Put sealed Key: '%s'\n", k)
 			}
-			fmt.Printf("Put sealed Key: '%s'\n", k)
 		}
 		p.lock.Lock()
 

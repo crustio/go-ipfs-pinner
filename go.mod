@@ -3,6 +3,7 @@ module github.com/ipfs/go-ipfs-pinner
 go 1.13
 
 require (
+	github.com/dgraph-io/badger v1.5.5-0.20190226225317-8115aed38f8f
 	github.com/gogo/protobuf v1.3.1
 	github.com/ipfs/go-blockservice v0.1.4
 	github.com/ipfs/go-cid v0.0.7
