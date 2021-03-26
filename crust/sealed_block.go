@@ -20,6 +20,10 @@ func TryGetSealedBlock(value []byte) (bool, *SealedBlock) {
 	return true, sb
 }
 
+func (sb *SealedBlock) ToSealedInfo() *SealedInfo {
+	return &SealedInfo{Sbs: []SealedBlock{*sb}}
+}
+
 type SealedInfo struct {
 	Sbs []SealedBlock `json:"sbs"`
 }

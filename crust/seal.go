@@ -9,11 +9,22 @@ import (
 
 var sealedMap map[cid.Cid]map[cid.Cid]SealedBlock
 
-func init() {
-	sealedMap = make(map[cid.Cid]map[cid.Cid]SealedBlock)
+var sealBlackSet map[cid.Cid]bool
+var sealBlackList = []string{
+	"QmQPeNsJPyVWPFDVHb77w8G42Fvo15z4bG2X8D2GhfbSXc",
+	"QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn",
 }
 
-func startSeal(root cid.Cid, value []byte) error {
+func init() {
+	sealedMap = make(map[cid.Cid]map[cid.Cid]SealedBlock)
+	sealBlackSet = make(map[cid.Cid]bool)
+	for _, v := range sealBlackList {
+		c, _ := cid.Decode(v)
+		sealBlackSet[c] = true
+	}
+}
+
+func startSeal(root cid.Cid, value []byte) (bool, error) {
 	sealedMap[root] = make(map[cid.Cid]SealedBlock)
 	sb := SealedBlock{
 		SHash: root.String(),
@@ -21,7 +32,7 @@ func startSeal(root cid.Cid, value []byte) error {
 		Data:  value,
 	}
 	sealedMap[root][root] = sb
-	return nil
+	return true, nil
 }
 
 func sealBlock(root cid.Cid, leaf cid.Cid, value []byte) error {
@@ -61,20 +72,27 @@ func deepSeal(ctx context.Context, rootNode ipld.Node, serv ipld.DAGService) err
 	return nil
 }
 
-func Seal(ctx context.Context, root cid.Cid, serv ipld.DAGService) (map[cid.Cid]SealedBlock, error) {
-	rootNode, err := serv.Get(ctx, root)
-	if err != nil {
-		return nil, err
+func Seal(ctx context.Context, root cid.Cid, serv ipld.DAGService) (bool, map[cid.Cid]SealedBlock, error) {
+	// Black list
+	if _, ok := sealBlackSet[root]; ok {
+		return false, nil, nil
 	}
 
-	err = startSeal(rootNode.Cid(), rootNode.RawData())
+	rootNode, err := serv.Get(ctx, root)
 	if err != nil {
-		return nil, err
+		return true, nil, err
+	}
+
+	needSeal, err := startSeal(rootNode.Cid(), rootNode.RawData())
+	if !needSeal || err != nil {
+		return needSeal, nil, err
 	}
 
 	err = deepSeal(ctx, rootNode, serv)
 	if err != nil {
-		return nil, err
+		return true, nil, err
 	}
-	return endSeal(root)
+
+	sb, err := endSeal(root)
+	return true, sb, err
 }

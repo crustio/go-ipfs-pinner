@@ -200,8 +200,13 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		}
 
 		// Seal
-		rpMap, err := crust.Seal(ctx, c, p.dserv)
-		if err == nil {
+		needSeal, rpMap, err := crust.Seal(ctx, c, p.dserv)
+		if err != nil {
+			p.lock.Lock()
+			return err
+		}
+
+		if needSeal {
 			// Replace blocks
 			for k, v := range rpMap {
 				bv, err := json.Marshal(v)
