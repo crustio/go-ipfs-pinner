@@ -220,7 +220,6 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 					p.lock.Lock()
 					return err
 				}
-				fmt.Printf("Put sealed Key: '%s'\n", k)
 			}
 		}
 		p.lock.Lock()
