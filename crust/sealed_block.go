@@ -5,9 +5,19 @@ import (
 )
 
 type SealedBlock struct {
-	Hash string `json:"hash"`
-	Size int    `json:"size"`
-	Data []byte `json:"data"`
+	SHash string `json:"s_hash"`
+	Size  int    `json:"size"`
+	Data  []byte `json:"data"`
+}
+
+func TryGetSealedBlock(value []byte) (bool, *SealedBlock) {
+	sb := &SealedBlock{}
+	err := json.Unmarshal(value, sb)
+	if err != nil {
+		return false, nil
+	}
+
+	return true, sb
 }
 
 type SealedInfo struct {
@@ -17,6 +27,11 @@ type SealedInfo struct {
 func (si *SealedInfo) Bytes() []byte {
 	bs, _ := json.Marshal(si)
 	return bs
+}
+
+func (si *SealedInfo) AddSealedBlock(sb SealedBlock) *SealedInfo {
+	si.Sbs = append(si.Sbs, sb)
+	return si
 }
 
 func TryGetSealedInfo(value []byte) (bool, *SealedInfo) {

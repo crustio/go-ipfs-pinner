@@ -16,9 +16,9 @@ func init() {
 func startSeal(root cid.Cid, value []byte) error {
 	sealedMap[root] = make(map[cid.Cid]SealedBlock)
 	sb := SealedBlock{
-		Hash: root.String(),
-		Size: len(value),
-		Data: value,
+		SHash: root.String(),
+		Size:  len(value),
+		Data:  value,
 	}
 	sealedMap[root][root] = sb
 	return nil
@@ -26,9 +26,9 @@ func startSeal(root cid.Cid, value []byte) error {
 
 func sealBlock(root cid.Cid, leaf cid.Cid, value []byte) error {
 	sb := SealedBlock{
-		Hash: leaf.String(),
-		Size: len(value),
-		Data: value,
+		SHash: leaf.String(),
+		Size:  len(value),
+		Data:  value,
 	}
 	sealedMap[root][leaf] = sb
 	return nil
