@@ -11,12 +11,12 @@ import (
 	"path"
 	"sync"
 
+	crust "github.com/crustio/go-ipfs-encryptor/crust"
 	"github.com/ipfs/go-cid"
 	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 	dshelp "github.com/ipfs/go-ipfs-ds-help"
 	ipfspinner "github.com/ipfs/go-ipfs-pinner"
-	"github.com/ipfs/go-ipfs-pinner/crust"
 	"github.com/ipfs/go-ipfs-pinner/dsindex"
 	ipld "github.com/ipfs/go-ipld-format"
 	logging "github.com/ipfs/go-log"
