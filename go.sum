@@ -31,6 +31,8 @@ github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3Ee
 github.com/cpuguy83/go-md2man v1.0.10/go.mod h1:SmD6nW6nTyfqj6ABTjUi3V3JVMnlJmwcJI5acqYI6dE=
 github.com/crustio/go-ipfs-encryptor v0.0.0-20210330062428-8a20c7948cab h1:srUY66gOrXyrwLtRiyDAPVCPMY/KPAWi6X6jrF+eFtM=
 github.com/crustio/go-ipfs-encryptor v0.0.0-20210330062428-8a20c7948cab/go.mod h1:WgK7d6kJXFgtJcObpdSw25kU4/u6caSERCwcAHBO0+k=
+github.com/crustio/go-ipfs-encryptor v0.0.0-20210416060307-ff37f4a45865 h1:HdYIapRUyX1bJG6mupkWQHtOBWc0qGe8gm4QN32/B2o=
+github.com/crustio/go-ipfs-encryptor v0.0.0-20210416060307-ff37f4a45865/go.mod h1:WgK7d6kJXFgtJcObpdSw25kU4/u6caSERCwcAHBO0+k=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
