@@ -33,6 +33,8 @@ github.com/crustio/go-ipfs-encryptor v0.0.0-20210330062428-8a20c7948cab h1:srUY6
 github.com/crustio/go-ipfs-encryptor v0.0.0-20210330062428-8a20c7948cab/go.mod h1:WgK7d6kJXFgtJcObpdSw25kU4/u6caSERCwcAHBO0+k=
 github.com/crustio/go-ipfs-encryptor v0.0.0-20210416060307-ff37f4a45865 h1:HdYIapRUyX1bJG6mupkWQHtOBWc0qGe8gm4QN32/B2o=
 github.com/crustio/go-ipfs-encryptor v0.0.0-20210416060307-ff37f4a45865/go.mod h1:WgK7d6kJXFgtJcObpdSw25kU4/u6caSERCwcAHBO0+k=
+github.com/crustio/go-ipfs-encryptor v0.0.0-20210419092531-3f22dbe7ffc7 h1:upTeYtB7+feTVpTe97tpZjqSpiMB7oFiC9njNbDqliM=
+github.com/crustio/go-ipfs-encryptor v0.0.0-20210419092531-3f22dbe7ffc7/go.mod h1:WgK7d6kJXFgtJcObpdSw25kU4/u6caSERCwcAHBO0+k=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

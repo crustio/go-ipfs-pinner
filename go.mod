@@ -3,7 +3,7 @@ module github.com/ipfs/go-ipfs-pinner
 go 1.13
 
 require (
-	github.com/crustio/go-ipfs-encryptor v0.0.0-20210416060307-ff37f4a45865
+	github.com/crustio/go-ipfs-encryptor v0.0.0-20210419092531-3f22dbe7ffc7
 	github.com/gogo/protobuf v1.3.1
 	github.com/ipfs/go-blockservice v0.1.4
 	github.com/ipfs/go-cid v0.0.7
