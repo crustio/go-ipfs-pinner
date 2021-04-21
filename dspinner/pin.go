@@ -5,14 +5,17 @@ package dspinner
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path"
 	"sync"
 
+	crust "github.com/crustio/go-ipfs-encryptor/crust"
 	"github.com/ipfs/go-cid"
 	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
+	dshelp "github.com/ipfs/go-ipfs-ds-help"
 	ipfspinner "github.com/ipfs/go-ipfs-pinner"
 	"github.com/ipfs/go-ipfs-pinner/dsindex"
 	ipld "github.com/ipfs/go-ipld-format"
@@ -191,10 +194,35 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		p.lock.Unlock()
 		// Fetch graph starting at node identified by cid
 		err = mdag.FetchGraph(ctx, c, p.dserv)
-		p.lock.Lock()
 		if err != nil {
+			p.lock.Lock()
 			return err
 		}
+
+		// Seal
+		needSeal, rpMap, err := crust.Seal(ctx, c, p.dserv)
+		if err != nil {
+			p.lock.Lock()
+			return err
+		}
+
+		if needSeal {
+			// Replace blocks
+			for k, v := range rpMap {
+				bv, err := json.Marshal(v)
+				if err != nil {
+					p.lock.Lock()
+					return err
+				}
+
+				err = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), bv)
+				if err != nil {
+					p.lock.Lock()
+					return err
+				}
+			}
+		}
+		p.lock.Lock()
 
 		// Only look again if something has changed.
 		if p.dirty != dirtyBefore {
