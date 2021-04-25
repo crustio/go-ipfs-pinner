@@ -1,4 +1,4 @@
-module github.com/crustio/go-ipfs-pinner
+module github.com/ipfs/go-ipfs-pinner
 
 go 1.13
 
