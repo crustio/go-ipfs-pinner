@@ -192,7 +192,7 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 		p.lock.Unlock()
 
 		// Start seal
-		needSeal, err := crust.StartSeal(c)
+		needSeal, err := crust.Worker.StartSeal(c)
 
 		if err != nil {
 			p.lock.Lock()
@@ -201,7 +201,7 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 		if needSeal {
 			ctx = crust.GenSealContext(ctx, c)
-			defer crust.EndSeal(c)
+			defer crust.Worker.EndSeal(c)
 		}
 
 		// Fetch graph starting at node identified by cid
