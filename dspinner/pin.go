@@ -176,8 +176,10 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 	p.lock.Lock()
 	defer p.lock.Unlock()
+	fmt.Println("000")
 
 	if recurse {
+		fmt.Println("111")
 		found, err := p.cidRIndex.HasAny(ctx, cidKey)
 		if err != nil {
 			return err
@@ -190,6 +192,7 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 		// temporary unlock to fetch the entire graph
 		p.lock.Unlock()
+		fmt.Println("222")
 
 		// Start seal
 		needSeal, err := crust.Worker.StartSeal(c)
@@ -201,16 +204,25 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 		if needSeal {
 			ctx = crust.GenSealContext(ctx, c)
-			defer crust.Worker.EndSeal(c)
 		}
 
 		// Fetch graph starting at node identified by cid
 		err = mdag.FetchGraph(ctx, c, p.dserv)
 		if err != nil {
 			p.lock.Lock()
+			if needSeal {
+				crust.Worker.EndSeal(c)
+			}
 			return err
 		}
 		p.lock.Lock()
+
+		if needSeal {
+			_, err = crust.Worker.EndSeal(c)
+			if err != nil {
+				return err
+			}
+		}
 
 		// Only look again if something has changed.
 		if p.dirty != dirtyBefore {
