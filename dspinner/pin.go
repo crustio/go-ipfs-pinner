@@ -176,10 +176,8 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 	p.lock.Lock()
 	defer p.lock.Unlock()
-	fmt.Println("000")
 
 	if recurse {
-		fmt.Println("111")
 		found, err := p.cidRIndex.HasAny(ctx, cidKey)
 		if err != nil {
 			return err
@@ -192,7 +190,6 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 		// temporary unlock to fetch the entire graph
 		p.lock.Unlock()
-		fmt.Println("222")
 
 		// Start seal
 		needSeal, err := crust.Worker.StartSeal(c)
