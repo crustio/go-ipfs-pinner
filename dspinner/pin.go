@@ -5,7 +5,6 @@ package dspinner
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"path"
@@ -15,7 +14,6 @@ import (
 	"github.com/ipfs/go-cid"
 	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
-	dshelp "github.com/ipfs/go-ipfs-ds-help"
 	ipfspinner "github.com/ipfs/go-ipfs-pinner"
 	"github.com/ipfs/go-ipfs-pinner/dsindex"
 	ipld "github.com/ipfs/go-ipld-format"
@@ -192,37 +190,36 @@ func (p *pinner) Pin(ctx context.Context, node ipld.Node, recurse bool) error {
 
 		// temporary unlock to fetch the entire graph
 		p.lock.Unlock()
-		// Fetch graph starting at node identified by cid
-		err = mdag.FetchGraph(ctx, c, p.dserv)
-		if err != nil {
-			p.lock.Lock()
-			return err
-		}
 
-		// Seal
-		needSeal, rpMap, err := crust.Seal(ctx, c, p.dserv)
+		// Start seal
+		needSeal, err := crust.Worker.StartSeal(c)
+
 		if err != nil {
 			p.lock.Lock()
 			return err
 		}
 
 		if needSeal {
-			// Replace blocks
-			for k, v := range rpMap {
-				bv, err := json.Marshal(v)
-				if err != nil {
-					p.lock.Lock()
-					return err
-				}
+			ctx = crust.GenSealContext(ctx, c)
+		}
 
-				err = p.dstore.Put(ds.RawKey(string("/blocks")+dshelp.CidToDsKey(k).String()), bv)
-				if err != nil {
-					p.lock.Lock()
-					return err
-				}
+		// Fetch graph starting at node identified by cid
+		err = mdag.FetchGraph(ctx, c, p.dserv)
+		if err != nil {
+			p.lock.Lock()
+			if needSeal {
+				crust.Worker.EndSeal(c)
 			}
+			return err
 		}
 		p.lock.Lock()
+
+		if needSeal {
+			_, err = crust.Worker.EndSeal(c)
+			if err != nil {
+				return err
+			}
+		}
 
 		// Only look again if something has changed.
 		if p.dirty != dirtyBefore {
